@@ -20,4 +20,5 @@ from code.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('mutant/', mutantView.as_view(), name = 'mutant'),
+    path('stats', statsView.as_view(), name = 'stats'),
 ]

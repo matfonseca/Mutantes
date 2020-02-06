@@ -11,7 +11,7 @@ from code.mutantes import *
 from django.db.models import Avg, Count, Min, Sum
 import json
 
-class mutantView(generics.ListCreateAPIView):
+class mutantView(generics.CreateAPIView):
     """
     API endpoint that allows multiple members to be created.
     """
@@ -49,6 +49,40 @@ class mutantView(generics.ListCreateAPIView):
             return body["dna"]
         else:
             return ''       
+
+
+class statsView(generics.CreateAPIView):
+    """
+    API endpoint that allows multiple members to be created.
+    """
+    queryset = Person.objects.none()
+    serializer_class = PersonSerializer
+
+    def get_queryset(self):
+        queryset = Person.objects.all()
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        
+        count_mutant_dna = Person.objects.filter(mutant = 1).count()
+        count_human_dna = Person.objects.filter(mutant = 0).count()
+        
+        
+        if(count_human_dna == 0):
+            ratio = 0
+        else:
+            ratio = round(count_mutant_dna/count_human_dna, 3)
+
+        return Response({"count_mutant_dna":count_mutant_dna, 
+                         "count_human_dna":count_human_dna, 
+                         "ratio":ratio },status = status.HTTP_200_OK)
+
+        
+
+
+
+
+
 
 
 
