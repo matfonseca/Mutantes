@@ -5,7 +5,8 @@ class Person(models.Model):
     id = models.IntegerField(null=False, primary_key=True)
     dna = models.TextField()
     mutant = models.BooleanField()
-    
+    dna_hash = models.IntegerField(null=False
+    ) 
     class Meta:
         db_table = 'Person'
 
