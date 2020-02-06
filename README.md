@@ -34,12 +34,14 @@ Pasos a seguir:
 
     1. activar venv (ejecutar parado en la carpeta donde se encuenta name-env y Mutantes):
         source name-env/bin/activate 
-        
+
     2. ejecutar el servidor (ejecutar parado en la carpeta Mutants):
         python manage.py runserver
         
 ---Actualizar la API---
 
 Si se realiza alguna modificacion sobre el modelo ejecutar:
+
     python manage.py makemigrations
+    
     python manege.py migrate
