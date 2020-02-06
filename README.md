@@ -3,11 +3,13 @@
 ---API---
 
 CNAME para probar la API:
+
     django-env.3cphvmfxqh.us-west-2.elasticbeanstalk.com/
 
 ---Requisitos---
 
 Tener instalado:
+
     -python3.6/3.7
     -pip
     -virtualenv
