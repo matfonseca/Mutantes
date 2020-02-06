@@ -24,7 +24,8 @@ La primera vez deberas realizar los siguientes pasos(en el mismo directorio dond
     2. Installar las dependencias:
         source name-env/bin/activate 
         pip install -r Mutants/requirements.txt
-        pip install Muntants/manage.py migrate
+        python Mutants/manage.py makemigrations code
+        python Mutants/manage.py migrate
 
 con esto deberia estar todo instalado de forma tal de que el venv ya esta en condiciones de ejecutar el servidor de la API.
 
