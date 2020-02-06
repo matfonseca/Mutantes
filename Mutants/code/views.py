@@ -32,8 +32,12 @@ class mutantView(generics.ListCreateAPIView):
         mutantDetector = MutantDetector()
        
         if(mutantDetector.isMutant(dna)):
+            p = Person(dna = dna, mutant = True)
+            p.save()
             return Response(status = status.HTTP_200_OK)
         else:
+            p = Person(dna = dna, mutant = False)
+            p.save()
             return Response(status = status.HTTP_403_FORBIDDEN)
     
     def getParam(self,request):
