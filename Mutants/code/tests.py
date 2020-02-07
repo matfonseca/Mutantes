@@ -1,7 +1,6 @@
 from django.test import TestCase
 from code.models import Person
 from code.mutantes import *
-import random
 from django.test import RequestFactory, TestCase
 from code.views import mutantView
 import json
@@ -10,7 +9,6 @@ class PersonTestCase(TestCase):
     def setUp(self):
         Person.objects.create(dna ="[ATGCGA,CAGTGC,TTATGT,AGAAGG,CCCCTA,TCACTG]", mutant = True,dna_hash = 1234)
         
-
     def test_get_dnsHash(self):
         
         person = Person.objects.get(dna_hash = 1234)
@@ -53,6 +51,42 @@ class MuntantDectectorCase(TestCase):
 
         self.assertTrue( not mutantDectector.isMutant(dna_human))
 
+    def test_isMutant_True_Diagonales(self):
+        
+        dna_mutant =["ATGCGA",
+                     "CAGTAC",
+                     "TTAAGT",
+                     "CTAAGG",
+                     "CCTCTA",
+                     "TCACTG"]
+        
+        mutantDectector = MutantDetector()
+
+        self.assertTrue(mutantDectector.isMutant(dna_mutant))
+
+    def test_isMutant_True_Horizontales(self):
+        dna_mutant =["TTAAAA",
+                     "CAGTCC",
+                     "TTAAGT",
+                     "CTAAGG",
+                     "CCTCTA",
+                     "TTTTCC"]
+        
+        mutantDectector = MutantDetector()
+
+        self.assertTrue(mutantDectector.isMutant(dna_mutant))
+
+    def test_isMutant_True_Verticales(self):
+        dna_mutant =["TTACAA",
+                     "TAGTCC",
+                     "TTAAGA",
+                     "TTAAGA",
+                     "CCTCTA",
+                     "TTTACA"]
+        
+        mutantDectector = MutantDetector()
+
+        self.assertTrue(mutantDectector.isMutant(dna_mutant))
 
 class MutantApi(TestCase):
     def setUp(self):
@@ -83,7 +117,7 @@ class MutantApi(TestCase):
         response = mutantView.as_view()(request)
         self.assertEqual(response.status_code, 403)
     
-    def test_isMutant_false_500dnas(self):
+    def test_isMutant_false_1000dnas(self):
         testBoolean = True
         dnas = jsonfileToDic("code/data/dnasHuman.json")
         
