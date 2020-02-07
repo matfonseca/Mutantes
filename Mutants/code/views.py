@@ -79,9 +79,15 @@ class mutantView(generics.CreateAPIView):
             return True,{"message":"incorrect format, the characters allows are (A,T,C,G)"}
 
         #Verificacion de dimension
-        if(len(dna) < 4):
+        dim = len(dna)
+        if(dim < 4):
             return True,{"message":"incorrect dimension"}
         
+        #Verifico que sea cuadrada
+        for row in dna:
+            if(len(row)!= dim):
+                return True, {"message":"matrix isn't square"}
+            
         return False,''
 
 class statsView(generics.CreateAPIView):
