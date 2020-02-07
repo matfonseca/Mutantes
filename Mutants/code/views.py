@@ -1,18 +1,13 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 from code.models import *
-from rest_framework import viewsets
 from code.serializers import *
 from code.mutantes import *
-from django.db.models import Avg, Count, Min, Sum
 import json
 
 class mutantView(generics.CreateAPIView):
-    """
-    API endpoint that allows multiple members to be created.
-    """
+    
     queryset = Person.objects.none()
     serializer_class = PersonSerializer
 
@@ -22,29 +17,34 @@ class mutantView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         
+        #Parametro dna de la resquest
         dna = self.getParam(request) 
 
-        if(dna == ''):
-            return Response({"message":"dna not found"},status = status.HTTP_400_BAD_REQUEST)
-        
+        #verificar request Body
+        err, message = self.checkBody(dna)
+        if(err):
+            return Response(message,status = status.HTTP_400_BAD_REQUEST)
+
+        #Busca si el dna ya ha sido ingresado anteriormente
         hash_value = hash(str(dna))
         person = Person.objects.filter(dna_hash = hash_value)
        
-        if(person.count() == 0):
+       
+        if(person.count() == 0): #El dna no ha sido ingresado anteriormente
             mutantDetector = MutantDetector()
         
             if(mutantDetector.isMutant(dna)):
                 p = Person(dna = dna, mutant = True, dna_hash = hash_value)
                 p.save()
                 return Response(status = status.HTTP_200_OK)
-            else:
+            else: 
                 p = Person(dna = dna, mutant = False, dna_hash = hash_value)
                 p.save()
                 return Response(status = status.HTTP_403_FORBIDDEN)
 
-        else:
+        else: #El dna ya ha sido ingresado anteriormente
             
-            isMutant = list(person.values())[0]['mutant']
+            isMutant = list(person.values())[0]['mutant'] #Toma el valor de mutant de la query
             if(isMutant):
                 return Response(status = status.HTTP_200_OK)
             else:
@@ -59,12 +59,33 @@ class mutantView(generics.CreateAPIView):
             return body["dna"]
         else:
             return ''       
+    
+    def checkFormat(self,dna):
+        #Verifica que la matriz solo contenga las letras (A,T,C,G)
+        for row in dna:
+            for character in row:
+                if(not character in ("A","T","C","G")):
+                    return False
+        return True
+    
+    def checkBody(self,dna):
+        
+        #El body no tiene dna
+        if(dna == ''): 
+            return True,{"message":"dna not found"}
+        
+        #Verificion del formato de dna
+        if(not self.checkFormat(dna)):
+            return True,{"message":"incorrect format, the characters allows are (A,T,C,G)"}
 
+        #Verificacion de dimension
+        if(len(dna) < 4):
+            return True,{"message":"incorrect dimension"}
+        
+        return False,''
 
 class statsView(generics.CreateAPIView):
-    """
-    API endpoint that allows multiple members to be created.
-    """
+    
     queryset = Person.objects.none()
     serializer_class = PersonSerializer
 
@@ -74,11 +95,12 @@ class statsView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         
+        #Obtener la cantidad de humanos y mutantes
         count_mutant_dna = Person.objects.filter(mutant = 1).count()
         count_human_dna = Person.objects.filter(mutant = 0).count()
         
         
-        if(count_human_dna == 0):
+        if(count_human_dna == 0): #Si no hay humanos 
             ratio = 0
         else:
             ratio = round(count_mutant_dna/count_human_dna, 3)

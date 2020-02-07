@@ -1,3 +1,11 @@
+#Suposiciones: 
+#  - Se considera que las secuencia de 4 caracteres iguales se pueden solapar parcialmente. 
+#       por ejemplo: que en una fila haya AAAAAGC se considera que las cuatro primeras A son una secuencia 
+#       y de la segunda hasta la quinta otra.
+#  - Dado que la secuencia debe tener 4 caracteres iguales, una matriz de dimension menor a 4x4 no podria 
+#    cumplir con la condicion, por lo tanto se supone que la matriz tiene una dimension igual o mayor a 4x4.
+#    En caso contrario se informara por la API que la dimension es incorrecta.
+
 class MutantDetector(object):
 
     def isMutant(self,dna):
@@ -7,16 +15,19 @@ class MutantDetector(object):
 
         count_equalSecuences = 0
 
+        #Busca secuencia de 4 caracteres iguales en posicion horizontal
         count_equalSecuences,isMutant = self.checkHorizontal(dna,n,count_equalSecuences)
 
         if(isMutant):
             return isMutant
 
+        #Busca secuencia de 4 caracteres iguales en posicion vertical
         count_equalSecuences,isMutant = self.checkVertical(dna,n,count_equalSecuences)
 
         if(isMutant):
             return isMutant
 
+        #Busca secuencia de 4 caracteres iguales en posicion Diagonal
         count_equalSecuences,isMutant = self.checkDiagonal(dna,n,count_equalSecuences)
 
         return isMutant
@@ -39,6 +50,7 @@ class MutantDetector(object):
     def checkVertical(self,dna,n,count_equalSecuences):
         dna_invertido = ['' for i in range(0,n)]
 
+        #Transpone la matriz
         for cadena in dna: 
             index_dna_invertido = 0
             for caracter in cadena:
@@ -54,6 +66,11 @@ class MutantDetector(object):
             fila_2 = fila + 2 
             fila_3 = fila + 3
 
+            #diagonal con indice de columna de menor a mayor
+            # x 0 0 0
+            # 0 x 0 0       x:posiciones que incluye la diagonal
+            # 0 0 x 0
+            # 0 0 0 x
             for colum in range(0,n-3):  
 
                 colum_1 = colum + 1
@@ -72,6 +89,11 @@ class MutantDetector(object):
                     if(count_equalSecuences >= 2):
                         return count_equalSecuences,True
             
+            #diagonal con indice de columna de mayor a menor
+            # 0 0 0 x
+            # 0 0 x 0      x:posiciones que incluye la diagonal
+            # 0 x 0 0
+            # x 0 0 0
             for colum2 in range(0,n-3):
                 
                 colum2_1 = colum2 + 1
