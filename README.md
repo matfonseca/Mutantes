@@ -11,7 +11,7 @@ CNAME para probar la API:
         Body ejemplo : { "dna":["ATGCGA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"] } 
     
     stats end-pont:
-    
+
         Metodo POST
         Url: django-env.3cphvmfxqh.us-west-2.elasticbeanstalk.com/stats
 
@@ -61,6 +61,7 @@ Si se realiza alguna modificacion sobre el modelo ejecutar:
     python manage.py test
 
 ---Code Coverage---
+
 Para ver el code coverage del codigo ejectuar(en el directorio donde se encuentra manage.py):
 
     coverage run --source='.' manage.py test
