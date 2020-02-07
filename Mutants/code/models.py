@@ -12,3 +12,12 @@ class Person(models.Model):
 
     def __str__(self):
         return self.id
+    
+    def getDnaHash(self):
+        return self.dna_hash
+
+    def getDna(self):
+        return self.dna
+    
+    def getMutant(self):
+        return self.mutant
