@@ -46,7 +46,7 @@ Pasos a seguir:
         source name-env/bin/activate 
 
     2. ejecutar el servidor (ejecutar parado en la carpeta Mutants):
-        python manage.py runserver
+        PYTHONHASHSEED=0 python manage.py runserver
         
 ---Actualizar la API---
 
