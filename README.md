@@ -46,3 +46,14 @@ Si se realiza alguna modificacion sobre el modelo ejecutar:
     python manage.py makemigrations
 
     python manege.py migrate
+
+---Ejecutar Test----
+
+    python manage.py test
+
+---Code Coverage---
+Para ver el code coverage del codigo ejectuar:
+
+    coverage run --source='.' manage.py test
+    
+    coverage report
