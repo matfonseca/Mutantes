@@ -2,8 +2,6 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
-
-
 from code.models import *
 from rest_framework import viewsets
 from code.serializers import *
@@ -28,18 +26,30 @@ class mutantView(generics.CreateAPIView):
 
         if(dna == ''):
             return Response({"message":"dna not found"},status = status.HTTP_400_BAD_REQUEST)
-
-        mutantDetector = MutantDetector()
+        
+        hash_value = hash(str(dna))
+        person = Person.objects.filter(dna_hash = hash_value)
        
-        if(mutantDetector.isMutant(dna)):
-            p = Person(dna = dna, mutant = True)
-            p.save()
-            return Response(status = status.HTTP_200_OK)
+        if(person.count() == 0):
+            mutantDetector = MutantDetector()
+        
+            if(mutantDetector.isMutant(dna)):
+                p = Person(dna = dna, mutant = True, dna_hash = hash_value)
+                p.save()
+                return Response(status = status.HTTP_200_OK)
+            else:
+                p = Person(dna = dna, mutant = False, dna_hash = hash_value)
+                p.save()
+                return Response(status = status.HTTP_403_FORBIDDEN)
+
         else:
-            p = Person(dna = dna, mutant = False)
-            p.save()
-            return Response(status = status.HTTP_403_FORBIDDEN)
-    
+            
+            isMutant = list(person.values())[0]['mutant']
+            if(isMutant):
+                return Response(status = status.HTTP_200_OK)
+            else:
+                return Response(status = status.HTTP_403_FORBIDDEN)
+
     def getParam(self,request):
         
         body_unicode = request.body.decode('utf-8')
