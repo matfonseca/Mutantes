@@ -1,5 +1,5 @@
 coverage==5.0.3
-Django==2.1.1
+Django==2.2.13
 django-ptvsd==0.0.1
 djangorestframework==3.11.0
 ptvsd==3.0.0
