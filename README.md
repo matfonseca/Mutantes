@@ -2,7 +2,7 @@
 
 ---API---
 
-CNAME para probar la API:
+CNAME para probar la API(no disponibles):
 
     mutant end-point:
 
